@@ -16,9 +16,9 @@ logger.add(
 
 @logger.catch
 def main():
-    from classes.classGame import Game
+    from classes.class_Game import Game
     game = Game()
-    game.runGame()
+    game.run_game()
 
 
 if __name__ == '__main__':
