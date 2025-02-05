@@ -17,7 +17,7 @@ class CheckEvents:
                 self.game.run = False
 
 
-            # self.game.player.handle_event(event)
+            self.game.player.handle_event(event)
 
             # if event.type == MOUSEBUTTONDOWN:
             #     if event.button == 1:

@@ -25,32 +25,32 @@ class CameraGroup(Group):
         self.camera_rect = pg.Rect(10, 10, 10, 10)
         self.keyboard_speed = None
         self.mouse_speed = None
-        self.setBackground()
+        self.set_background()
 
 
-    def setBackground(self) -> None:
+    def set_background(self) -> None:
         self.source = back
         # self.source= backgroundSection(LG.currentLevel)
         # self.gifBackgtound = gif_pygame.load('Images/Back/gif/2.gif')
         # self.gifRect = self.gifBackgtound.get_rect()
         self.background_surface = load(self.source).convert_alpha()
         # self.backgroundRect = self.backgroundSurface.get_rect(center = self.half)
-        self.backgroundRect = self.background_surface.get_rect()
+        self.background_rect = self.background_surface.get_rect()
         # ic(self.backgroundRect)
 
 
-    def cameraCenter(self, target):
+    def camera_center(self, target):
         self.offset.x = target.rect.centerx - self.half[0]
         self.offset.y = target.rect.centery - self.half[1]
 
 
-    def customDraw(self, player):
-        self.cameraCenter(player)
+    def custom_draw(self, player):
+        self.camera_center(player)
         # background offset
         # self.display_surface.blit(self.gifBackgtound, self.gifRect)
-        self.backgroundOffset = self.backgroundRect.topleft - self.offset
-        self.display_surface.blit(self.background_surface, self.backgroundOffset)
+        self.background_offset = self.background_rect.topleft - self.offset
+        self.display_surface.blit(self.background_surface, self.background_offset)
 
         for sprite in sorted(self.sprites(), key = lambda sprite: sprite.rect.center):
-            offsetPosition = sprite.rect.topleft - self.offset
-            self.display_surface.blit(sprite.image_rotation, offsetPosition)
+            offset_position = sprite.rect.topleft - self.offset
+            self.display_surface.blit(sprite.image_rotation, offset_position)

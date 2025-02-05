@@ -28,3 +28,5 @@ class ScreenGame:
             self.caption = set_caption(self.caption)
         if self.icon:
             self.icon = set_icon(load(self.icon))
+            
+        self.rect = self.window.get_rect()
