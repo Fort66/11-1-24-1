@@ -13,6 +13,7 @@ from config.create_Objects import screen
 from classes.class_CheckEvents import CheckEvents
 from classes.class_CameraGroup import CameraGroup
 from units.class_Player import Player
+from units.class_Enemies import Enemy
 
 
 
@@ -36,6 +37,15 @@ class Game:
                             game=self
                             )
         self.camera_group.add(self.player)
+        
+        for _ in range(10):
+            self.camera_group.add(
+                                Enemy(
+                                    group=self.camera_group,
+                                    game=self,
+                                    player=self.player
+                                    )
+                                )
     
     def create_groups(self):
         self.camera_group = CameraGroup(self)

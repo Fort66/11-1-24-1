@@ -7,11 +7,11 @@ pg.init()
 
 
 
-logger.add(
-    stdout,
-    format='{time} {level} {message}',
-    level = 'ERROR'
-)
+# logger.add(
+#     stdout,
+#     format='{time} {level} {message}',
+#     level = 'ERROR'
+# )
 
 
 @logger.catch

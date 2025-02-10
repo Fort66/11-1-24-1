@@ -35,7 +35,7 @@ class CameraGroup(Group):
         # self.gifRect = self.gifBackgtound.get_rect()
         self.background_surface = load(self.source).convert_alpha()
         # self.backgroundRect = self.backgroundSurface.get_rect(center = self.half)
-        self.background_rect = self.background_surface.get_rect()
+        self.background_rect = self.background_surface.get_rect(center=self.game.screen.rect.center)
         # ic(self.backgroundRect)
 
 
