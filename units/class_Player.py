@@ -1,41 +1,26 @@
 from pygame.sprite import Sprite
 from pygame.transform import scale, flip, rotozoom, scale_by
 from pygame.image import load
-from pygame.locals import MOUSEWHEEL, K_a, K_d, K_w, K_s
+from pygame.locals import MOUSEWHEEL, MOUSEBUTTONDOWN, K_a, K_d, K_w, K_s
 from pygame.math import Vector2
 from pygame.key import get_pressed
 
 from icecream import ic
 
-scale_value = .2
-
-heroes = {
-        0: scale_by(load('images/Heroes/hero1/hero1.png').convert_alpha(), scale_value), # 0
-        22: scale_by(load('images/Heroes/hero1/hero2.png').convert_alpha(), scale_value), # 22
-        45: scale_by(load('images/Heroes/hero1/hero3.png').convert_alpha(), scale_value), # 45
-        67: scale_by(load('images/Heroes/hero1/hero4.png').convert_alpha(), scale_value), # 67
-        90: scale_by(load('images/Heroes/hero1/hero5.png').convert_alpha(), scale_value), # 90
-        112: flip(scale_by(load('images/Heroes/hero1/hero4.png').convert_alpha(), scale_value), False, True),
-        135: flip(scale_by(load('images/Heroes/hero1/hero3.png').convert_alpha(), scale_value), False, True),
-        157: flip(scale_by(load('images/Heroes/hero1/hero2.png').convert_alpha(), scale_value), False, True),
-        180: flip(scale_by(load('images/Heroes/hero1/hero1.png').convert_alpha(), scale_value), False, True),
-        202: flip(scale_by(load('images/Heroes/hero1/hero2.png').convert_alpha(), scale_value), False, True),
-        225: flip(scale_by(load('images/Heroes/hero1/hero3.png').convert_alpha(), scale_value), False, True),
-        247: flip(scale_by(load('images/Heroes/hero1/hero4.png').convert_alpha(), scale_value), False, True),
-        270: flip(scale_by(load('images/Heroes/hero1/hero5.png').convert_alpha(), scale_value), False, True),
-        292: flip(flip(scale_by(load('images/Heroes/hero1/hero4.png').convert_alpha(), scale_value), False, True), False, True),
-        315: flip(flip(scale_by(load('images/Heroes/hero1/hero3.png').convert_alpha(), scale_value), False, True), False, True),
-        337: flip(flip(scale_by(load('images/Heroes/hero1/hero2.png').convert_alpha(), scale_value), False, True), False, True),
-        359: scale_by(load('images/Heroes/hero1/hero1.png').convert_alpha(), scale_value),
-}
-
+from sources.heroes.source import HEROES
+from units.class_Shots import Shots
+from config.create_Objects import screen
 
 
 
 class Player(Sprite):
-    def __init__(self, pos, group, game):
+    def __init__(
+                self,
+                pos=(0, 0),
+                group=None,
+                ):
         super().__init__(group)
-        self.game = game
+
         self.group = group
         self.pos = pos
         # self.size = size
@@ -44,27 +29,69 @@ class Player(Sprite):
         self.rotation_speed = 10
         self.speed = 7
         self.__post_init__()
+        self.group.add(self)
 
 
     def __post_init__(self):
-        self.image_rotation = heroes[0]
+        self.image_rotation = HEROES[1]['angle'][0]['sprite']
         self.rect = self.image_rotation.get_rect(center=self.pos)
+        self.prepare_weapon(0)
+
+
+    def prepare_weapon(self, angle):
+        self.pos_weapons = []
+        for value in HEROES[1]['angle'][angle]['weapons']:
+            self.pos_weapons.append(value)
 
 
     def handle_event(self, event):
         if event.type == MOUSEWHEEL:
-            if event.y == 1:
+            if event.y == -1:
                 self.angle = (self.angle - self.rotation_speed) % 360
                 self.rotation()
-            elif event.y == -1:
+            elif event.y == 1:
                 self.angle = (self.angle + self.rotation_speed) % 360
                 self.rotation()
+                
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+                self.shot()
+                
+                
+    def shot(self):
+        for value in self.pos_weapons_rotation:
+            self.group.add(
+                            Shots(
+                                pos=(value),
+                                screen=screen,
+                                group=self.group,
+                                angle=self.angle,
+                                speed=10,
+                                kill_shot_distance=2000,
+                                shoter=self
+                                )
+                            )
+
+
+    @property
+    def pos_weapons_rotation(self):
+        result = []
+        for value in self.pos_weapons:
+            newX, newY = self.vector_rotation(value, -self.angle / 57.5)
+            result.append([self.rect.centerx + newX, self.rect.centery + newY])
+        return result
+
+
+    def vector_rotation(self, vector, angle):
+        vector = Vector2(vector)
+        return vector.rotate_rad(angle)
 
 
     def rotation(self):
-        for i in heroes:
-            if self.angle <= i:
-                self.image = heroes[i]
+        for value in HEROES[1]['angle']:
+            if self.angle <= value:
+                self.image = HEROES[1]['angle'][value]['sprite']
+                self.prepare_weapon(value)
                 break
 
         self.image_rotation = self.image
@@ -99,6 +126,10 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
+        
+        for value in self.pos_weapons_rotation:
+            value[0] += self.direction.x
+            value[1] += self.direction.y
 
 
 

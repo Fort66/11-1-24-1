@@ -56,6 +56,7 @@ class Enemy(Sprite):
         self.min_distance = 300
         self.shot_distance = 1500
         self.__post_init__()
+        self.group.add(self)
 
 
     def __post_init__(self):

@@ -34,9 +34,8 @@ class Game:
         self.player = Player(
                             pos=screen.rect.center,
                             group=self.camera_group,
-                            game=self
                             )
-        self.camera_group.add(self.player)
+
         
         for _ in range(10):
             self.camera_group.add(
