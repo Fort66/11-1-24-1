@@ -4,12 +4,15 @@ from pygame.image import load
 from pygame.locals import MOUSEWHEEL, MOUSEBUTTONDOWN, K_a, K_d, K_w, K_s
 from pygame.math import Vector2
 from pygame.key import get_pressed
+import math
 
 from icecream import ic
 
-from sources.heroes.source import HEROES
+from config.sources.heroes.source import HEROES
 from units.class_Shots import Shots
 from config.create_Objects import screen
+
+from logic.class_FirstShot import FirstShot
 
 
 
@@ -28,6 +31,7 @@ class Player(Sprite):
         self.angle = 0
         self.rotation_speed = 10
         self.speed = 7
+        self.first_shot = FirstShot()
         self.__post_init__()
         self.group.add(self)
 
@@ -52,12 +56,14 @@ class Player(Sprite):
             elif event.y == 1:
                 self.angle = (self.angle + self.rotation_speed) % 360
                 self.rotation()
-                
+
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
+                if not self.first_shot:
+                    self.first_shot = not self.first_shot
                 self.shot()
-                
-                
+
+
     def shot(self):
         for value in self.pos_weapons_rotation:
             self.group.add(
@@ -68,7 +74,9 @@ class Player(Sprite):
                                 angle=self.angle,
                                 speed=10,
                                 kill_shot_distance=2000,
-                                shoter=self
+                                shoter=self,
+                                image='images/Shots/shot3.png',
+                                scale_value=.15
                                 )
                             )
 
@@ -77,7 +85,7 @@ class Player(Sprite):
     def pos_weapons_rotation(self):
         result = []
         for value in self.pos_weapons:
-            newX, newY = self.vector_rotation(value, -self.angle / 57.5)
+            newX, newY = self.vector_rotation(value, -self.angle / 180 * math.pi)
             result.append([self.rect.centerx + newX, self.rect.centery + newY])
         return result
 

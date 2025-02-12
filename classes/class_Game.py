@@ -41,7 +41,6 @@ class Game:
             self.camera_group.add(
                                 Enemy(
                                     group=self.camera_group,
-                                    game=self,
                                     player=self.player
                                     )
                                 )

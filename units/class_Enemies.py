@@ -10,68 +10,50 @@ from icecream import ic
 
 from random import randint, choice, uniform
 
-scale_value = .2
+from config.sources.enemies.source import ENEMIES
+from units.class_Shots import Shots
 
-enemies = {
-        0: scale_by(load('images/Enemies/enemy1/ship1.png').convert_alpha(), scale_value), # 0
-        22: scale_by(load('images/Enemies/enemy1/ship2.png').convert_alpha(), scale_value), # 22
-        45: scale_by(load('images/Enemies/enemy1/ship3.png').convert_alpha(), scale_value), # 45
-        67: scale_by(load('images/Enemies/enemy1/ship4.png').convert_alpha(), scale_value), # 67
-        90: scale_by(load('images/Enemies/enemy1/ship5.png').convert_alpha(), scale_value), # 90
-        112: flip(scale_by(load('images/Enemies/enemy1/ship4.png').convert_alpha(), scale_value), False, True),
-        135: flip(scale_by(load('images/Enemies/enemy1/ship3.png').convert_alpha(), scale_value), False, True),
-        157: flip(scale_by(load('images/Enemies/enemy1/ship2.png').convert_alpha(), scale_value), False, True),
-        180: flip(scale_by(load('images/Enemies/enemy1/ship1.png').convert_alpha(), scale_value), False, True),
-        202: flip(scale_by(load('images/Enemies/enemy1/ship2.png').convert_alpha(), scale_value), False, True),
-        225: flip(scale_by(load('images/Enemies/enemy1/ship3.png').convert_alpha(), scale_value), False, True),
-        247: flip(scale_by(load('images/Enemies/enemy1/ship4.png').convert_alpha(), scale_value), False, True),
-        270: flip(scale_by(load('images/Enemies/enemy1/ship5.png').convert_alpha(), scale_value), False, True),
-        292: flip(flip(scale_by(load('images/Enemies/enemy1/ship4.png').convert_alpha(), scale_value), False, True), False, True),
-        315: flip(flip(scale_by(load('images/Enemies/enemy1/ship3.png').convert_alpha(), scale_value), False, True), False, True),
-        337: flip(flip(scale_by(load('images/Enemies/enemy1/ship2.png').convert_alpha(), scale_value), False, True), False, True),
-        359: scale_by(load('images/Enemies/enemy1/ship1.png').convert_alpha(), scale_value),
-}
-
-
+from config.create_Objects import screen
 
 
 class Enemy(Sprite):
     def __init__(self,
                 group=None,
-                game=None,
                 player=None):
         super().__init__(group)
 
-        self.game = game
         self.group = group
         self.player = player
-        self.direction_list = [0, 1, -1]
         self.angle = 0
-        self.speed = randint(0, 10)
-        self.move_count = randint(0, 600)
-        self.moveX = choice(self.direction_list)
-        self.moveY = choice(self.direction_list)
         self.shots = False
         self.is_min_distance = False
         self.min_distance = 300
         self.shot_distance = 1500
         self.__post_init__()
+        self.random_value()
+        self.change_direction()
         self.group.add(self)
 
 
     def __post_init__(self):
-        self.image = enemies[0]
-        self.image_rotation = enemies[0]
-        
+        self.image_rotation = ENEMIES[1]['angle'][0]['sprite']
+
         self.pos = (
                     uniform(self.group.background_rect.left + 200,
                             self.group.background_rect.right - 200),
                     uniform(self.group.background_rect.top + 200,
                             self.group.background_rect.bottom - 200)
         )
-        
+
         self.rect = self.image_rotation.get_rect(center=self.pos)
         self.direction = Vector2(self.pos)
+
+
+    def random_value(self):
+        self.speed = randint(0, 10)
+        self.move_count = randint(0, 600)
+        self.direction_list = [0, 1, -1]
+
 
 
     def rotate_vector(self, vector, angle):
@@ -83,27 +65,25 @@ class Enemy(Sprite):
         rotateX = self.player.rect.centerx - self.rect.centerx
         rotateY = self.player.rect.centery - self.rect.centery
         angle_vector = -math.atan2(rotateY, rotateX) * 180 / math.pi
-        
+
         if angle_vector > 0:
             self.angle = angle_vector
         else:
             self.angle = angle_vector + 360
-        
-        for i in enemies:
-            if self.angle <= i:
-                self.image = enemies[i]
+
+        for value in ENEMIES[1]['angle']:
+            if self.angle <= value:
+                self.image = ENEMIES[1]['angle'][value]['sprite']
                 break
 
         self.image_rotation = self.image
         self.image_rotation = rotozoom(self.image, self.angle, 1)
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
-        
-        
+
+
     def check_move_count(self):
         if self.move_count <= 0:
-            self.move_count = randint(0, 600)
-            self.speed = randint(0, 10)
-            self.change_direction()
+            self.random_value()
         else:
             self.move_count -= 1
 
@@ -138,6 +118,25 @@ class Enemy(Sprite):
 
     def move(self):
         self.rect.move_ip(self.moveX * self.speed, self.moveY * self.speed)
+        
+        
+    def shot(self):
+        if Vector2(self.rect.center).distance_to(self.player.rect.center) <= self.shot_distance:
+            if self.player.first_shot and randint(0, 100) == 50:
+                self.group.add(
+                            Shots(
+                                pos=self.rect.center,
+                                screen=screen,
+                                group=self.group,
+                                angle=self.angle,
+                                speed=10,
+                                kill_shot_distance=2000,
+                                shoter=self,
+                                color=None,
+                                image='images/Shots/shot1.png',
+                                scale_value=.08
+                                )
+                            )
 
         
     def update(self):
@@ -145,6 +144,7 @@ class Enemy(Sprite):
         self.rotation()
         self.check_move_count()
         self.move()
+        self.shot()
 
 
 

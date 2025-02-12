@@ -1,8 +1,10 @@
 from pygame.transform import flip, scale_by
 from pygame.image import load
 
+from icecream import ic
+
 SCALE_VALUE = {
-                1: .17,
+                1: .25,
                }
 
 
@@ -78,3 +80,4 @@ HEROES = {
                         },
                 }
         }
+
