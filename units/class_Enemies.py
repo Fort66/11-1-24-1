@@ -54,6 +54,7 @@ class Enemy(Sprite):
                                 dir_path='images/Guards/guard2',
                                 speed_frame=.09,
                                 obj_rect=self.rect,
+                                angle=self.angle,
                                 )
 
 
@@ -153,7 +154,7 @@ class Enemy(Sprite):
         self.check_move_count()
         self.move()
         self.shot()
-        self.shield.animate(self.rect)
+        self.shield.animate(self.rect, self.angle)
 
 
 

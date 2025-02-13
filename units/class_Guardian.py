@@ -6,10 +6,13 @@ class Guardian(Animator):
                 self,
                 dir_path=None,
                 speed_frame=.05,
-                obj_rect=None
+                obj_rect=None,
+                angle=0
                 ):
         super().__init__(
                         dir_path,
                         speed_frame,
-                        obj_rect
+                        obj_rect,
+                        angle
                         )
+

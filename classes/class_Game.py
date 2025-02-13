@@ -37,13 +37,13 @@ class Game:
                             )
 
         
-        for _ in range(10):
-            self.camera_group.add(
-                                Enemy(
-                                    group=self.camera_group,
-                                    player=self.player
-                                    )
-                                )
+        # for _ in range(10):
+        #     self.camera_group.add(
+        #                         Enemy(
+        #                             group=self.camera_group,
+        #                             player=self.player
+        #                             )
+        #                         )
     
     def create_groups(self):
         self.camera_group = CameraGroup(self)

@@ -44,8 +44,11 @@ class Player(Sprite):
         self.shield = Guardian(
                                 dir_path='images/Guards/guard1',
                                 speed_frame=.09,
-                                obj_rect=self.rect
+                                obj_rect=self.rect,
+                                angle=self.angle,
                                 )
+        # self.shield_rect = self.shield.get_rect()
+        self.shield_rotation = self.shield
         
         self.prepare_weapon(0)
 
@@ -115,6 +118,12 @@ class Player(Sprite):
 
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
 
+        # for i in self.shield_rotation.frames:
+        #     i[0] = rotozoom(i[0], self.angle, 1)
+            # self.shield_rotation.rect = self.shield[i][0].get_rect(center=self.rect.center)
+        # rotozoom(self.shield.frames[self.shield.frame][0], self.angle, 1)
+        # self.shield.rect = self.image_rotation.get_rect()(center=self.rect.center)
+
 
     def check_position(self):
         if self.rect.left <= self.group.background_rect.left:
@@ -142,8 +151,8 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
-        self.shield.animate(self.rect)
-        
+        self.shield.animate(self.rect, self.angle)
+
         for value in self.pos_weapons_rotation:
             value[0] += self.direction.x
             value[1] += self.direction.y
