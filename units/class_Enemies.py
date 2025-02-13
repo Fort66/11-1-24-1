@@ -12,6 +12,7 @@ from random import randint, choice, uniform
 
 from config.sources.enemies.source import ENEMIES
 from units.class_Shots import Shots
+from units.class_Guardian import Guardian
 
 from config.create_Objects import screen
 
@@ -36,7 +37,8 @@ class Enemy(Sprite):
 
 
     def __post_init__(self):
-        self.image_rotation = ENEMIES[1]['angle'][0]['sprite']
+        self.image = ENEMIES[1]['angle'][0]['sprite']
+        self.image_rotation = self.image.copy()
 
         self.pos = (
                     uniform(self.group.background_rect.left + 200,
@@ -47,6 +49,12 @@ class Enemy(Sprite):
 
         self.rect = self.image_rotation.get_rect(center=self.pos)
         self.direction = Vector2(self.pos)
+        
+        self.shield = Guardian(
+                                dir_path='images/Guards/guard2',
+                                speed_frame=.09,
+                                obj_rect=self.rect,
+                                )
 
 
     def random_value(self):
@@ -145,6 +153,7 @@ class Enemy(Sprite):
         self.check_move_count()
         self.move()
         self.shot()
+        self.shield.animate(self.rect)
 
 
 

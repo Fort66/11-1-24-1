@@ -42,7 +42,9 @@ class Player(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.pos)
         
         self.shield = Guardian(
-                                dir_path='images/Shield/shield1.png',
+                                dir_path='images/Guards/guard1',
+                                speed_frame=.09,
+                                obj_rect=self.rect
                                 )
         
         self.prepare_weapon(0)
@@ -140,6 +142,7 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
+        self.shield.animate(self.rect)
         
         for value in self.pos_weapons_rotation:
             value[0] += self.direction.x
