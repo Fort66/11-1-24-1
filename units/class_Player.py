@@ -10,6 +10,7 @@ from icecream import ic
 
 from config.sources.heroes.source import HEROES
 from units.class_Shots import Shots
+from units.class_Guardian import Guardian
 from config.create_Objects import screen
 
 from logic.class_FirstShot import FirstShot
@@ -39,6 +40,11 @@ class Player(Sprite):
     def __post_init__(self):
         self.image_rotation = HEROES[1]['angle'][0]['sprite']
         self.rect = self.image_rotation.get_rect(center=self.pos)
+        
+        self.shield = Guardian(
+                                dir_path='images/Shield/shield1.png',
+                                )
+        
         self.prepare_weapon(0)
 
 
