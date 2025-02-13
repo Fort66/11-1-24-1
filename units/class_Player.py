@@ -45,7 +45,7 @@ class Player(Sprite):
                                 dir_path='images/Guards/guard1',
                                 speed_frame=.09,
                                 obj_rect=self.rect,
-                                angle=self.angle,
+                                angle=self.angle
                                 )
         # self.shield_rect = self.shield.get_rect()
         self.shield_rotation = self.shield
