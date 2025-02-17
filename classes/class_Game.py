@@ -15,8 +15,7 @@ from classes.class_CameraGroup import CameraGroup
 from units.class_Player import Player
 from units.class_Enemies import Enemy
 
-
-
+from classes.class_SpriteGroups import SpriteGroups
 
 class Game:
     def __init__(self):
@@ -27,27 +26,22 @@ class Game:
         self.win_width = screen.window.get_width()
         self.win_height = screen.window.get_height()
         self.check_events = CheckEvents(self)
+        self.sprite_groups = SpriteGroups()
+        self.sprite_groups.camera_group = CameraGroup(self)
         self.create_groups()
         self.setup()
-        
+
     def setup(self):
         self.player = Player(
-                            pos=screen.rect.center,
-                            group=self.camera_group,
-                            )
+            pos=screen.rect.center,
+            group=self.camera_group,
+        )
 
-        
         for _ in range(10):
-            self.camera_group.add(
-                                Enemy(
-                                    group=self.camera_group,
-                                    player=self.player
-                                    )
-                                )
-    
+            self.camera_group.add(Enemy(group=self.camera_group, player=self.player))
+
     def create_groups(self):
         self.camera_group = CameraGroup(self)
-
 
     def run_game(self):
         while self.run:
@@ -55,12 +49,10 @@ class Game:
             # gifBack.render(screen.window, gifBackRect)
             # обработка игровых событий
             self.check_events.check_events()
-            
+
             self.camera_group.update()
             self.camera_group.custom_draw(self.player)
 
-            
-            
-            self.screen.update_caption(f'{str(round(self.clock.get_fps(), 2))}')
+            self.screen.update_caption(f"{str(round(self.clock.get_fps(), 2))}")
             pg.display.update()
             self.clock.tick(self.fps)

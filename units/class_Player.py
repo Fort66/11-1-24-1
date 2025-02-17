@@ -16,13 +16,12 @@ from config.create_Objects import screen
 from logic.class_FirstShot import FirstShot
 
 
-
 class Player(Sprite):
     def __init__(
-                self,
-                pos=(0, 0),
-                group=None,
-                ):
+        self,
+        pos=(0, 0),
+        group=None,
+    ):
         super().__init__(group)
 
         self.group = group
@@ -36,28 +35,23 @@ class Player(Sprite):
         self.__post_init__()
         self.group.add(self)
 
-
     def __post_init__(self):
-        self.image_rotation = HEROES[1]['angle'][0]['sprite']
+        self.image_rotation = HEROES[1]["angle"][0]["sprite"]
         self.rect = self.image_rotation.get_rect(center=self.pos)
-        
-        self.shield = Guardian(
-                                dir_path='images/Guards/guard1',
-                                speed_frame=.09,
-                                obj_rect=self.rect,
-                                angle=self.angle
-                                )
-        # self.shield_rect = self.shield.get_rect()
-        self.shield_rotation = self.shield
-        
-        self.prepare_weapon(0)
 
+        self.shield = Guardian(
+            dir_path="images/Guards/guard1",
+            speed_frame=0.09,
+            obj_rect=self.rect,
+            angle=self.angle,
+        )
+
+        self.prepare_weapon(0)
 
     def prepare_weapon(self, angle):
         self.pos_weapons = []
-        for value in HEROES[1]['angle'][angle]['weapons']:
+        for value in HEROES[1]["angle"][angle]["weapons"]:
             self.pos_weapons.append(value)
-
 
     def handle_event(self, event):
         if event.type == MOUSEWHEEL:
@@ -74,23 +68,21 @@ class Player(Sprite):
                     self.first_shot = not self.first_shot
                 self.shot()
 
-
     def shot(self):
         for value in self.pos_weapons_rotation:
             self.group.add(
-                            Shots(
-                                pos=(value),
-                                screen=screen,
-                                group=self.group,
-                                angle=self.angle,
-                                speed=10,
-                                kill_shot_distance=2000,
-                                shoter=self,
-                                image='images/Shots/shot3.png',
-                                scale_value=.15
-                                )
-                            )
-
+                Shots(
+                    pos=(value),
+                    screen=screen,
+                    group=self.group,
+                    angle=self.angle,
+                    speed=10,
+                    kill_shot_distance=2000,
+                    shoter=self,
+                    image="images/Shots/shot3.png",
+                    scale_value=0.15,
+                )
+            )
 
     @property
     def pos_weapons_rotation(self):
@@ -100,16 +92,14 @@ class Player(Sprite):
             result.append([self.rect.centerx + newX, self.rect.centery + newY])
         return result
 
-
     def vector_rotation(self, vector, angle):
         vector = Vector2(vector)
         return vector.rotate_rad(angle)
 
-
     def rotation(self):
-        for value in HEROES[1]['angle']:
+        for value in HEROES[1]["angle"]:
             if self.angle <= value:
-                self.image = HEROES[1]['angle'][value]['sprite']
+                self.image = HEROES[1]["angle"][value]["sprite"]
                 self.prepare_weapon(value)
                 break
 
@@ -120,10 +110,9 @@ class Player(Sprite):
 
         # for i in self.shield_rotation.frames:
         #     i[0] = rotozoom(i[0], self.angle, 1)
-            # self.shield_rotation.rect = self.shield[i][0].get_rect(center=self.rect.center)
+        # self.shield_rotation.rect = self.shield[i][0].get_rect(center=self.rect.center)
         # rotozoom(self.shield.frames[self.shield.frame][0], self.angle, 1)
         # self.shield.rect = self.image_rotation.get_rect()(center=self.rect.center)
-
 
     def check_position(self):
         if self.rect.left <= self.group.background_rect.left:
@@ -134,7 +123,6 @@ class Player(Sprite):
             self.rect.top = self.group.background_rect.top
         if self.rect.bottom >= self.group.background_rect.bottom:
             self.rect.bottom = self.group.background_rect.bottom
-
 
     def move(self):
         keys = get_pressed()
@@ -147,7 +135,6 @@ class Player(Sprite):
         if keys[K_d]:
             self.rect.move_ip(self.speed, 0)
 
-
     def update(self):
         self.check_position()
         self.move()
@@ -156,9 +143,3 @@ class Player(Sprite):
         for value in self.pos_weapons_rotation:
             value[0] += self.direction.x
             value[1] += self.direction.y
-
-
-
-
-
-
