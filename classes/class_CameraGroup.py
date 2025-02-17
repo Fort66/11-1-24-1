@@ -59,3 +59,5 @@ class CameraGroup(Group):
                 self.display_surface.blit(
                     sprite.shield.frames[sprite.shield.frame][0], offset_position
                 )
+            
+        self.game.mini_map.update()

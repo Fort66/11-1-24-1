@@ -6,13 +6,12 @@ from pygame.image import load
 
 from icecream import ic
 
+from classes.class_SpriteGroups import SpriteGroups
 
 class Shots(Sprite):
     def __init__(
                 self,
                 pos=(0, 0),
-                group=None,
-                screen=None,
                 size=(20, 3),
                 color='white',
                 speed=0,
@@ -20,21 +19,24 @@ class Shots(Sprite):
                 shoter=None,
                 kill_shot_distance=None,
                 scale_value=None,
-                image=None
+                image=None,
+                damage=None
                 ):
-        super().__init__(group)
+        self.sprite_groups = SpriteGroups()
+        super().__init__(self.sprite_groups.camera_group)
 
-        self.screen = screen
-        self.group = group
+        self.damage = damage
         self.shoter = shoter
         self.kill_shot_distance = kill_shot_distance
         self.angle = angle
         self.speed = speed
         self.size = size
         self.old_shot_coordinate = Vector2(self.shoter.rect.center)
-        # self.image = pg.Surface(self.size, pg.SRCALPHA)
-        self.image = scale_by(load(image).convert_alpha(), scale_value)
-        # self.image.fill(color)
+        if image:
+            self.image = scale_by(load(image).convert_alpha(), scale_value)
+        else:
+            self.image = pg.Surface(self.size, pg.SRCALPHA)
+            self.image.fill(color)
         self.image_rotation = rotozoom(self.image, self.angle, 1)
         self.rect = self.image_rotation.get_rect(center=pos)
         self.offset =  Vector2().rotate(self.angle)

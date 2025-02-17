@@ -1,13 +1,8 @@
 import pygame as pg
 
-
-from icecream import ic
-
-# Инициализация звука. Инициализация плейера. (частота, биты (Если значение отрицательное, то будут использоваться подписанные значения выборки. Положительные значения означают, что будут использоваться неподписанные аудиосэмплированные выборки. Неверное значение вызывает исключение), каналы, буфер)
 pg.mixer.pre_init(44100, -16, 2, 2048)
 
-from pygame.locals import QUIT, KEYDOWN, K_ESCAPE
-
+from icecream import ic
 
 from config.create_Objects import screen
 from classes.class_CheckEvents import CheckEvents
@@ -16,6 +11,9 @@ from units.class_Player import Player
 from units.class_Enemies import Enemy
 
 from classes.class_SpriteGroups import SpriteGroups
+
+from UI.Screens.class_MiniMap import MiniMap
+
 
 class Game:
     def __init__(self):
@@ -28,30 +26,23 @@ class Game:
         self.check_events = CheckEvents(self)
         self.sprite_groups = SpriteGroups()
         self.sprite_groups.camera_group = CameraGroup(self)
-        self.create_groups()
+        self.mini_map = MiniMap(scale_value=0.2, color_map=(0, 100, 0, 170))
         self.setup()
 
     def setup(self):
-        self.player = Player(
-            pos=screen.rect.center,
-            group=self.camera_group,
-        )
+        self.player = Player(pos=screen.rect.center)
 
         for _ in range(10):
-            self.camera_group.add(Enemy(group=self.camera_group, player=self.player))
-
-    def create_groups(self):
-        self.camera_group = CameraGroup(self)
+            self.sprite_groups.camera_group.add(Enemy(player=self.player))
 
     def run_game(self):
         while self.run:
             screen.window.fill(screen.color)
-            # gifBack.render(screen.window, gifBackRect)
-            # обработка игровых событий
+
             self.check_events.check_events()
 
-            self.camera_group.update()
-            self.camera_group.custom_draw(self.player)
+            self.sprite_groups.camera_group.update()
+            self.sprite_groups.camera_group.custom_draw(self.player)
 
             self.screen.update_caption(f"{str(round(self.clock.get_fps(), 2))}")
             pg.display.update()

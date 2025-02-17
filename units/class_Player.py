@@ -13,27 +13,27 @@ from units.class_Shots import Shots
 from units.class_Guardian import Guardian
 from config.create_Objects import screen
 
-from logic.class_FirstShot import FirstShot
+from classes.class_SpriteGroups import SpriteGroups
+from functions.function_player_collision import check_collision
 
 
 class Player(Sprite):
     def __init__(
         self,
         pos=(0, 0),
-        group=None,
     ):
-        super().__init__(group)
+        self.sprite_groups = SpriteGroups()
+        super().__init__(self.sprite_groups.camera_group)
+        self.sprite_groups.camera_group.add(self)
+        self.sprite_groups.player_group.add(self)
 
-        self.group = group
         self.pos = pos
-        # self.size = size
         self.direction = Vector2(pos)
         self.angle = 0
         self.rotation_speed = 10
-        self.speed = 7
-        self.first_shot = FirstShot()
+        self.speed = 10
+        self.first_shot = False
         self.__post_init__()
-        self.group.add(self)
 
     def __post_init__(self):
         self.image_rotation = HEROES[1]["angle"][0]["sprite"]
@@ -43,7 +43,7 @@ class Player(Sprite):
             dir_path="images/Guards/guard1",
             speed_frame=0.09,
             obj_rect=self.rect,
-            angle=self.angle,
+            guard_level=10,
         )
 
         self.prepare_weapon(0)
@@ -70,19 +70,18 @@ class Player(Sprite):
 
     def shot(self):
         for value in self.pos_weapons_rotation:
-            self.group.add(
-                Shots(
+            self.sprite_groups.camera_group.add(
+                shot := Shots(
                     pos=(value),
-                    screen=screen,
-                    group=self.group,
                     angle=self.angle,
-                    speed=10,
+                    speed=15,
                     kill_shot_distance=2000,
                     shoter=self,
                     image="images/Shots/shot3.png",
                     scale_value=0.15,
                 )
             )
+            self.sprite_groups.player_shot_group.add(shot)
 
     @property
     def pos_weapons_rotation(self):
@@ -108,21 +107,15 @@ class Player(Sprite):
 
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
 
-        # for i in self.shield_rotation.frames:
-        #     i[0] = rotozoom(i[0], self.angle, 1)
-        # self.shield_rotation.rect = self.shield[i][0].get_rect(center=self.rect.center)
-        # rotozoom(self.shield.frames[self.shield.frame][0], self.angle, 1)
-        # self.shield.rect = self.image_rotation.get_rect()(center=self.rect.center)
-
     def check_position(self):
-        if self.rect.left <= self.group.background_rect.left:
-            self.rect.left = self.group.background_rect.left
-        if self.rect.right >= self.group.background_rect.right:
-            self.rect.right = self.group.background_rect.right
-        if self.rect.top <= self.group.background_rect.top:
-            self.rect.top = self.group.background_rect.top
-        if self.rect.bottom >= self.group.background_rect.bottom:
-            self.rect.bottom = self.group.background_rect.bottom
+        if self.rect.left <= self.sprite_groups.camera_group.background_rect.left:
+            self.rect.left = self.sprite_groups.camera_group.background_rect.left
+        if self.rect.right >= self.sprite_groups.camera_group.background_rect.right:
+            self.rect.right = self.sprite_groups.camera_group.background_rect.right
+        if self.rect.top <= self.sprite_groups.camera_group.background_rect.top:
+            self.rect.top = self.sprite_groups.camera_group.background_rect.top
+        if self.rect.bottom >= self.sprite_groups.camera_group.background_rect.bottom:
+            self.rect.bottom = self.sprite_groups.camera_group.background_rect.bottom
 
     def move(self):
         keys = get_pressed()
@@ -138,7 +131,10 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
-        self.shield.animate(self.rect, self.angle)
+        if hasattr(self, "shield"):
+            self.shield.animate(self.rect)
+
+        check_collision(self)
 
         for value in self.pos_weapons_rotation:
             value[0] += self.direction.x
