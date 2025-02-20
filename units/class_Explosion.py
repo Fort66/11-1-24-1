@@ -1,7 +1,6 @@
 from classes.class_Animator import Animator
 
-
-class Guardian(Animator):
+class Explosion(Animator):
     def __init__(
         self, dir_path=None, speed_frame=0.05, obj_rect=None, guard_level=None, loops=-1
     ):
@@ -11,10 +10,3 @@ class Guardian(Animator):
             obj_rect,
             loops
         )
-
-        self.guard_level = guard_level
-
-    @property
-    def decrease_level(self):
-        if self.guard_level > 0:
-            self.guard_level -= 1

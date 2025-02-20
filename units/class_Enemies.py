@@ -14,7 +14,7 @@ from config.sources.enemies.source import ENEMIES
 from units.class_Shots import Shots
 from units.class_Guardian import Guardian
 
-from config.create_Objects import screen
+from config.create_Objects import checks
 from classes.class_SpriteGroups import SpriteGroups
 
 from functions.function_enemies_collision import check_collision
@@ -59,6 +59,7 @@ class Enemy(Sprite):
             speed_frame=0.09,
             obj_rect=self.rect,
             guard_level=randint(3, 10),
+            loops=-1
         )
 
     def random_value(self):
@@ -100,17 +101,7 @@ class Enemy(Sprite):
         self.moveY = choice(self.direction_list)
 
     def check_position(self):
-        if self.rect.left <= self.sprite_groups.camera_group.background_rect.left:
-            self.rect.left = self.sprite_groups.camera_group.background_rect.left
-            self.change_direction()
-        if self.rect.right >= self.sprite_groups.camera_group.background_rect.right:
-            self.rect.right = self.sprite_groups.camera_group.background_rect.right
-            self.change_direction()
-        if self.rect.top <= self.sprite_groups.camera_group.background_rect.top:
-            self.rect.top = self.sprite_groups.camera_group.background_rect.top
-            self.change_direction()
-        if self.rect.bottom >= self.sprite_groups.camera_group.background_rect.bottom:
-            self.rect.bottom = self.sprite_groups.camera_group.background_rect.bottom
+        if checks.position(self, self.sprite_groups.camera_group.background_rect):
             self.change_direction()
 
         if not self.is_min_distance:

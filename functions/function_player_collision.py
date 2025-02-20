@@ -1,5 +1,6 @@
 from pygame.sprite import spritecollide
 from config.create_Objects import screen
+from units.class_Explosion import Explosion
 
 
 def check_collision(obj):
@@ -9,7 +10,14 @@ def check_collision(obj):
         )
         if hits:
             for hit in hits:
-                hit.kill()
+                if hit:
+                    obj.expl_enemies_rocket = Explosion(
+                        dir_path="images/Explosions/explosion_rocket1",
+                        speed_frame=.05,
+                        obj_rect=hit.rect,
+                        loops=1
+                    )
+                    hit.kill()
 
                 if hasattr(obj, "shield"):
                     if obj.shield.guard_level > 0:
