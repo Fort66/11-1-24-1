@@ -43,9 +43,13 @@ class Player(Sprite):
         self.shield = Guardian(
             dir_path="images/Guards/guard1",
             speed_frame=0.09,
-            obj_rect=self.rect,
+            obj=self,
             guard_level=10,
-            loops=-1
+            loops=-1,
+            pos=self.rect.center,
+            angle=self.angle,
+            scale_value=(1, 1)
+            
         )
 
         self.prepare_weapon(0)

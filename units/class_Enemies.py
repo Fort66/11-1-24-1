@@ -59,7 +59,8 @@ class Enemy(Sprite):
             speed_frame=0.09,
             obj_rect=self.rect,
             guard_level=randint(3, 10),
-            loops=-1
+            loops=-1,
+            pos=self.rect.center
         )
 
     def random_value(self):
@@ -145,7 +146,7 @@ class Enemy(Sprite):
         self.check_position()
         self.rotation()
         self.check_move_count()
-        self.move()
+        # self.move()
         self.shot()
         if hasattr(self, "shield"):
             self.shield.animate(self.rect)

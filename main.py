@@ -8,7 +8,7 @@ pg.init()
 
 
 # logger.add(
-#     stdout,
+#     stdout,в
 #     format='{time} {level} {message}',
 #     level = 'ERROR'
 # )
