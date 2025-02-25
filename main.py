@@ -1,7 +1,7 @@
 import pygame as pg
 
 from loguru import logger
-from sys import exit, stdout
+from sys import exit
 
 pg.init()
 
