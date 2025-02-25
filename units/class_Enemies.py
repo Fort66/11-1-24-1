@@ -149,6 +149,6 @@ class Enemy(Sprite):
         self.check_position()
         self.rotation()
         self.check_move_count()
-        # self.move()
+        self.move()
         self.shot()
         enemies_collision()
