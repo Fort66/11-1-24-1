@@ -14,7 +14,7 @@ from units.class_Guardian import Guardian
 from config.create_Objects import checks, weapons
 
 from classes.class_SpriteGroups import SpriteGroups
-from functions.function_player_collision import check_collision
+from functions.function_player_collision import player_collision
 
 
 class Player(Sprite):
@@ -33,14 +33,13 @@ class Player(Sprite):
         self.rotation_speed = 10
         self.speed = 10
         self.first_shot = False
-        self.check_collision = check_collision
         self.__post_init__()
 
     def __post_init__(self):
         self.image_rotation = HEROES[1]["angle"][0]["sprite"]
         self.rect = self.image_rotation.get_rect(center=self.pos)
 
-        self.shield = Guardian(
+        self.sprite_groups.camera_group.add(shield:= Guardian(
             dir_path="images/Guards/guard1",
             speed_frame=0.09,
             obj=self,
@@ -49,7 +48,8 @@ class Player(Sprite):
             angle=self.angle,
             scale_value=(1, 1),
             size=self.rect.size
-        )
+        ))
+        self.sprite_groups.player_guard_group.add(shield)
 
         self.prepare_weapon(0)
 
@@ -120,6 +120,8 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
+
+        player_collision()
 
         value = self.pos_weapons_rotation()
         for pos in value:

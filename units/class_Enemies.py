@@ -17,7 +17,7 @@ from units.class_Guardian import Guardian
 from config.create_Objects import checks
 from classes.class_SpriteGroups import SpriteGroups
 
-from functions.function_enemies_collision import check_collision
+from functions.function_enemies_collision import enemies_collision
 
 
 class Enemy(Sprite):
@@ -54,7 +54,7 @@ class Enemy(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.pos)
         self.direction = Vector2(self.pos)
 
-        self.shield = Guardian(
+        self.sprite_groups.camera_group.add(shield:= Guardian(
             dir_path="images/Guards/guard2",
             speed_frame=0.09,
             guard_level=randint(3, 10),
@@ -63,7 +63,8 @@ class Enemy(Sprite):
             angle=self.angle,
             scale_value=(1, 1),
             obj=self
-        )
+        ))
+        self.sprite_groups.enemies_guard_group.add(shield)
 
     def random_value(self):
         self.speed = randint(0, 10)
@@ -148,6 +149,6 @@ class Enemy(Sprite):
         self.check_position()
         self.rotation()
         self.check_move_count()
-        self.move()
+        # self.move()
         self.shot()
-        check_collision(self)
+        enemies_collision()

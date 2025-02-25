@@ -1,19 +1,16 @@
-from pygame.sprite import spritecollide
+from pygame.sprite import groupcollide
 from config.create_Objects import screen
 
 from icecream import ic
 
-def check_collision(obj):
-    if len(obj.sprite_groups.player_shot_group):
-        hits = spritecollide(
-            obj, obj.sprite_groups.player_shot_group, dokill=False, collided=None
-        )
-        if hits:
-            for hit in hits:
-                hit.kill()
+from classes.class_SpriteGroups import SpriteGroups
 
-                if hasattr(obj, "shield"):
-                    if obj.shield.guard_level > 0:
-                        obj.shield.decrease_level
-                    else:
-                        delattr(obj, "shield")
+sprite_groups = SpriteGroups()
+
+def enemies_collision():
+    object_collide = groupcollide(
+        sprite_groups.enemies_group,
+        sprite_groups.player_shot_group,
+        dokilla=False,
+        dokillb=True
+        )
