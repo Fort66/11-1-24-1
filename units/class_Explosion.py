@@ -1,7 +1,8 @@
+from pygame.sprite import Sprite
 from classes.class_Animator import Animator
 from pygame.transform import rotozoom
 
-class Explosion(Animator):
+class Explosion(Animator, Sprite):
     def __init__(
         self,
         dir_path=None,
@@ -19,11 +20,10 @@ class Explosion(Animator):
             size=size,
             scale_value=scale_value
         )
-        
-        
+
         self.angle = angle
         self.obj = obj
-        
+
     def update(self):
         self.rect.center = self.obj.rect.center
         self.angle = self.obj.angle

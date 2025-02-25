@@ -7,7 +7,7 @@ from pygame.image import load
 from icecream import ic
 
 from classes.class_SpriteGroups import SpriteGroups
-from functions.function_shots_collision import player_guard_collision
+from functions.function_shots_collision import player_collision
 
 class Shots(Sprite):
     def __init__(
@@ -57,5 +57,5 @@ class Shots(Sprite):
     def update(self):
         self.check_position()
         self.move()
-        
-        player_guard_collision()
+
+        player_collision()
