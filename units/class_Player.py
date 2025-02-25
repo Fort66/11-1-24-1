@@ -46,10 +46,9 @@ class Player(Sprite):
             obj=self,
             guard_level=10,
             loops=-1,
-            pos=self.rect.center,
             angle=self.angle,
-            scale_value=(1, 1)
-            
+            scale_value=(1, 1),
+            size=self.rect.size
         )
 
         self.prepare_weapon(0)
@@ -121,15 +120,6 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
-        if hasattr(self, "shield"):
-            self.shield.animate(self.rect)
-
-        self.check_collision(self)
-
-        if hasattr(self, 'expl_enemies_rocket'):
-            self.expl_enemies_rocket.animate(self.rect)
-
-
 
         value = self.pos_weapons_rotation()
         for pos in value:

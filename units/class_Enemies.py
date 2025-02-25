@@ -57,10 +57,12 @@ class Enemy(Sprite):
         self.shield = Guardian(
             dir_path="images/Guards/guard2",
             speed_frame=0.09,
-            obj_rect=self.rect,
             guard_level=randint(3, 10),
             loops=-1,
-            pos=self.rect.center
+            size=self.rect.size,
+            angle=self.angle,
+            scale_value=(1, 1),
+            obj=self
         )
 
     def random_value(self):
@@ -146,9 +148,6 @@ class Enemy(Sprite):
         self.check_position()
         self.rotation()
         self.check_move_count()
-        # self.move()
+        self.move()
         self.shot()
-        if hasattr(self, "shield"):
-            self.shield.animate(self.rect)
-
         check_collision(self)
