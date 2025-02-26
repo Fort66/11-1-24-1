@@ -14,3 +14,12 @@ def player_collision():
         dokilla=False,
         dokillb=True
         )
+    if object_collide:
+        lot_hits = len(list(object_collide.values())[0])
+        hits = list(object_collide.keys())[0]
+
+        if hits.hp > 0:
+            hits.decrease_hp(lot_hits)
+
+        if hits.hp <= 0:
+            hits.kill()

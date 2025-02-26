@@ -38,6 +38,7 @@ class Player(Sprite):
         self.shot_time = 0
         self.permission_shot = .25
         self.old_screen_size = screen.window.get_size()
+        self.hp = 5
         self.__post_init__()
 
     def __post_init__(self):
@@ -139,6 +140,12 @@ class Player(Sprite):
     #     if screen.window.get_size() != self.old_screen_size:
     #         self.rect = self.image_rotation.get_rect(center=screen.rect.center)
     #         self.old_screen_size = screen.window.get_size()
+    
+    def decrease_hp(self, value):
+        if self.hp > 0:
+            self.hp -= value
+        if self.hp <= 0:
+            self.kill()
 
     def update(self):
         # self.change_size_map()

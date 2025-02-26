@@ -7,7 +7,7 @@ class LevelsGame:
         'player_level': 1,
         'game_level': 1,
         'current_level': 1,
-        'attack_level': 2,
+        'attack_level': 0,
         'final_level': 5,
         'enemies_min': 6,
         'enemies_max': 15,
@@ -20,4 +20,7 @@ class LevelsGame:
 
     def __init__(self):
         self.__dict__ = self.__levels_dict
+        self.enemies_amount = round(lerp(self.enemies_min, self.enemies_max, self.attack_level / self.final_level))
+    
+    def update_levels(self):
         self.enemies_amount = round(lerp(self.enemies_min, self.enemies_max, self.attack_level / self.final_level))

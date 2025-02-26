@@ -33,6 +33,7 @@ class Enemy(Sprite):
         self.min_distance = 300
         self.shot_distance = 1500
         self.shot_time = 0
+        self.hp = 2
         self.__post_init__()
         self.random_value()
         self.change_direction()
@@ -165,11 +166,17 @@ class Enemy(Sprite):
                         self.sprite_groups.enemies_shot_group.add(shot)
                         self.shot_time = time()
 
+    def decrease_hp(self, value):
+        if self.hp > 0:
+            self.hp -= value
+        if self.hp <= 0:
+            self.kill()
+
     def update(self):
         self.check_position()
         self.rotation()
         self.check_move_count()
-        # self.move()
+        self.move()
         self.shot()
         enemies_collision()
 
