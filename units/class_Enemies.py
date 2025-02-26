@@ -7,7 +7,7 @@ from pygame.key import get_pressed
 
 import math
 from icecream import ic
-
+from time import time
 from random import randint, choice, uniform
 
 from config.sources.enemies.source import ENEMIES
@@ -32,6 +32,7 @@ class Enemy(Sprite):
         self.is_min_distance = False
         self.min_distance = 300
         self.shot_distance = 1500
+        self.shot_time = 0
         self.__post_init__()
         self.random_value()
         self.change_direction()
@@ -62,7 +63,8 @@ class Enemy(Sprite):
             size=self.rect.size,
             angle=self.angle,
             scale_value=(1, 1),
-            obj=self
+            obj=self,
+            owner=self
         ))
         self.sprite_groups.enemies_guard_group.add(shield)
 
@@ -70,6 +72,7 @@ class Enemy(Sprite):
         self.speed = randint(0, 10)
         self.move_count = randint(0, 600)
         self.direction_list = [0, 1, -1]
+        self.permision_shot = uniform(1, 3)
 
     def rotate_vector(self, vector, angle):
         vector = Vector2(vector)
@@ -105,8 +108,10 @@ class Enemy(Sprite):
         self.moveY = choice(self.direction_list)
 
     def check_position(self):
-        if checks.position(self, self.sprite_groups.camera_group.background_rect):
+        checks.position(self, self.sprite_groups.camera_group.background_rect)
+        if not checks.resolved_move:
             self.change_direction()
+            checks.resolved_move = True
 
         if not self.is_min_distance:
             if (
@@ -130,25 +135,30 @@ class Enemy(Sprite):
             Vector2(self.rect.center).distance_to(self.player.rect.center)
             <= self.shot_distance
         ):
-            if self.player.first_shot and randint(0, 100) == 50:
-                self.sprite_groups.camera_group.add(
-                    shot := Shots(
-                        pos=self.rect.center,
-                        angle=self.angle,
-                        speed=15,
-                        kill_shot_distance=2000,
-                        shoter=self,
-                        color=None,
-                        image="images/Shots/shot1.png",
-                        scale_value=0.08,
+            if self.player.first_shot:
+                if self.shot_time == 0:
+                    self.shot_time = time()
+                if time() - self.shot_time >= self.permision_shot:
+                    self.sprite_groups.camera_group.add(
+                        shot := Shots(
+                            pos=self.rect.center,
+                            angle=self.angle,
+                            speed=15,
+                            kill_shot_distance=2000,
+                            shoter=self,
+                            color=None,
+                            image="images/Shots/shot1.png",
+                            scale_value=0.08,
+                            owner=self
+                        )
                     )
-                )
-                self.sprite_groups.enemies_shot_group.add(shot)
+                    self.sprite_groups.enemies_shot_group.add(shot)
+                    self.shot_time = time()
 
     def update(self):
         self.check_position()
         self.rotation()
         self.check_move_count()
-        self.move()
+        # self.move()
         self.shot()
         enemies_collision()

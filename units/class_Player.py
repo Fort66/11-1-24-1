@@ -1,7 +1,7 @@
 from pygame.sprite import Sprite
 from pygame.transform import scale, flip, rotozoom, scale_by
 from pygame.image import load
-from pygame.locals import MOUSEWHEEL, MOUSEBUTTONDOWN, K_a, K_d, K_w, K_s
+from pygame.locals import MOUSEWHEEL, MOUSEBUTTONDOWN, K_a, K_d, K_w, K_s, K_c
 from pygame.math import Vector2
 from pygame.key import get_pressed
 import math
@@ -12,6 +12,8 @@ from config.sources.heroes.source import HEROES
 from units.class_Shots import Shots
 from units.class_Guardian import Guardian
 from config.create_Objects import checks, weapons
+
+from time import time
 
 from classes.class_SpriteGroups import SpriteGroups
 from functions.function_player_collision import player_collision
@@ -33,6 +35,8 @@ class Player(Sprite):
         self.rotation_speed = 10
         self.speed = 10
         self.first_shot = False
+        self.shot_time = 0
+        self.permission_shot = .5
         self.__post_init__()
 
     def __post_init__(self):
@@ -47,7 +51,8 @@ class Player(Sprite):
             loops=-1,
             angle=self.angle,
             scale_value=(1, 1),
-            size=self.rect.size
+            size=self.rect.size,
+            owner=self
         ))
         self.sprite_groups.player_guard_group.add(shield)
 
@@ -70,20 +75,25 @@ class Player(Sprite):
                 self.shot()
 
     def shot(self):
-        value = self.pos_weapons_rotation()
-        for pos in value:
-            self.sprite_groups.camera_group.add(
-                shot := Shots(
-                    pos=(pos),
-                    angle=self.angle,
-                    speed=15,
-                    kill_shot_distance=2000,
-                    shoter=self,
-                    image="images/Shots/shot3.png",
-                    scale_value=0.15,
+        if self.shot_time == 0:
+            self.shot_time = time()
+        if time() - self.shot_time >= self.permission_shot:
+            value = self.pos_weapons_rotation()
+            for pos in value:
+                self.sprite_groups.camera_group.add(
+                    shot := Shots(
+                        pos=(pos),
+                        angle=self.angle,
+                        speed=15,
+                        kill_shot_distance=2000,
+                        shoter=self,
+                        image="images/Shots/shot3.png",
+                        scale_value=0.15,
+                        owner=self
+                    )
                 )
-            )
-            self.sprite_groups.player_shot_group.add(shot)
+                self.sprite_groups.player_shot_group.add(shot)
+                self.shot_time = time()
 
     def prepare_weapon(self, angle):
         weapons.load_weapons(obj=self, source=HEROES[1]["angle"][angle]["weapons"], angle=angle)
@@ -116,6 +126,13 @@ class Player(Sprite):
             self.rect.move_ip(0, self.speed)
         if keys[K_d]:
             self.rect.move_ip(self.speed, 0)
+
+        # if keys[K_c]:
+        #     # if event.type == MOUSEBUTTONDOWN:
+        #     # if event.button == 1:
+        #     if not self.first_shot:
+        #         self.first_shot = not self.first_shot
+        #     self.shot()
 
     def update(self):
         self.check_position()
