@@ -11,7 +11,7 @@ from icecream import ic
 from config.sources.heroes.source import HEROES
 from units.class_Shots import Shots
 from units.class_Guardian import Guardian
-from config.create_Objects import checks, weapons
+from config.create_Objects import checks, weapons, screen
 
 from time import time
 
@@ -36,7 +36,8 @@ class Player(Sprite):
         self.speed = 10
         self.first_shot = False
         self.shot_time = 0
-        self.permission_shot = .5
+        self.permission_shot = .25
+        self.old_screen_size = screen.window.get_size()
         self.__post_init__()
 
     def __post_init__(self):
@@ -134,13 +135,16 @@ class Player(Sprite):
         #         self.first_shot = not self.first_shot
         #     self.shot()
 
+    # def change_size_map(self):
+    #     if screen.window.get_size() != self.old_screen_size:
+    #         self.rect = self.image_rotation.get_rect(center=screen.rect.center)
+    #         self.old_screen_size = screen.window.get_size()
+
     def update(self):
+        # self.change_size_map()
         self.check_position()
         self.move()
 
         player_collision()
 
-        value = self.pos_weapons_rotation()
-        for pos in value:
-            pos[0] += self.direction.x
-            pos[1] += self.direction.y
+        weapons.update_weapons(self, self.angle)

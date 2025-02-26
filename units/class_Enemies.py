@@ -14,7 +14,7 @@ from config.sources.enemies.source import ENEMIES
 from units.class_Shots import Shots
 from units.class_Guardian import Guardian
 
-from config.create_Objects import checks
+from config.create_Objects import checks, weapons
 from classes.class_SpriteGroups import SpriteGroups
 
 from functions.function_enemies_collision import enemies_collision
@@ -67,6 +67,14 @@ class Enemy(Sprite):
             owner=self
         ))
         self.sprite_groups.enemies_guard_group.add(shield)
+
+        self.prepare_weapon(0)
+
+    def prepare_weapon(self, angle):
+        weapons.load_weapons(obj=self, source=ENEMIES[1]["angle"][angle]["weapons"], angle=angle)
+
+    def pos_weapons_rotation(self):
+        return weapons.pos_rotation(self, self.angle)
 
     def random_value(self):
         self.speed = randint(0, 10)
@@ -139,21 +147,23 @@ class Enemy(Sprite):
                 if self.shot_time == 0:
                     self.shot_time = time()
                 if time() - self.shot_time >= self.permision_shot:
-                    self.sprite_groups.camera_group.add(
-                        shot := Shots(
-                            pos=self.rect.center,
-                            angle=self.angle,
-                            speed=15,
-                            kill_shot_distance=2000,
-                            shoter=self,
-                            color=None,
-                            image="images/Shots/shot1.png",
-                            scale_value=0.08,
-                            owner=self
+                    value = self.pos_weapons_rotation()
+                    for pos in value:
+                        self.sprite_groups.camera_group.add(
+                            shot := Shots(
+                                pos=(pos),
+                                angle=self.angle,
+                                speed=15,
+                                kill_shot_distance=2000,
+                                shoter=self,
+                                color=None,
+                                image="images/Shots/shot1.png",
+                                scale_value=0.08,
+                                owner=self
+                            )
                         )
-                    )
-                    self.sprite_groups.enemies_shot_group.add(shot)
-                    self.shot_time = time()
+                        self.sprite_groups.enemies_shot_group.add(shot)
+                        self.shot_time = time()
 
     def update(self):
         self.check_position()
@@ -162,3 +172,5 @@ class Enemy(Sprite):
         # self.move()
         self.shot()
         enemies_collision()
+
+        weapons.update_weapons(self, self.angle)
