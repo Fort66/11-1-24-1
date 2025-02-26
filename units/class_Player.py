@@ -33,7 +33,7 @@ class Player(Sprite):
         self.direction = Vector2(pos)
         self.angle = 0
         self.rotation_speed = 10
-        self.speed = 10
+        self.speed = 5
         self.first_shot = False
         self.shot_time = 0
         self.permission_shot = .25
@@ -86,7 +86,7 @@ class Player(Sprite):
                     shot := Shots(
                         pos=(pos),
                         angle=self.angle,
-                        speed=15,
+                        speed=8,
                         kill_shot_distance=2000,
                         shoter=self,
                         image="images/Shots/shot3.png",

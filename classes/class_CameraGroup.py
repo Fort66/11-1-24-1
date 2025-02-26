@@ -3,15 +3,14 @@ from pygame.sprite import Group
 from pygame.image import load
 from pygame.display import get_surface
 from pygame.math import Vector2
+from config.sources.backgrounds.source import GALAXY_SECTORS
+from logic.class_LevelsGame import LevelsGame
 
 # import gif_pygame
 # from Game.source import *
 # from icecream import ic
 # from Game.LevelsGame import LG
 # from Game.source import backgroundSection
-
-back = "images/back6.jpg"
-
 
 class CameraGroup(Group):
     def __init__(self, game=None):
@@ -28,17 +27,14 @@ class CameraGroup(Group):
         self.camera_rect = pg.Rect(10, 10, 10, 10)
         self.keyboard_speed = None
         self.mouse_speed = None
+        self.levels_game = LevelsGame()
         self.set_background()
 
     def set_background(self) -> None:
-        self.source = back
-        # self.source= backgroundSection(LG.currentLevel)
-        # self.gifBackgtound = gif_pygame.load('Images/Back/gif/2.gif')
-        # self.gifRect = self.gifBackgtound.get_rect()
+        self.source = GALAXY_SECTORS[self.levels_game.current_level]
         self.background_surface = load(self.source).convert_alpha()
-        # self.backgroundRect = self.backgroundSurface.get_rect(center = self.half)
         self.background_rect = self.background_surface.get_rect()
-        # ic(self.backgroundRect)
+
 
     def camera_center(self, target):
         self.offset.x = target.rect.centerx - self.half[0]

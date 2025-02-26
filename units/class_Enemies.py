@@ -78,7 +78,7 @@ class Enemy(Sprite):
         return weapons.pos_rotation(self, self.angle)
 
     def random_value(self):
-        self.speed = randint(0, 10)
+        self.speed = randint(0, 5)
         self.move_count = randint(0, 600)
         self.direction_list = [0, 1, -1]
         self.permision_shot = uniform(1, 3)
@@ -154,7 +154,7 @@ class Enemy(Sprite):
                             shot := Shots(
                                 pos=(pos),
                                 angle=self.angle,
-                                speed=15,
+                                speed=8,
                                 kill_shot_distance=2000,
                                 shoter=self,
                                 color=None,

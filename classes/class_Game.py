@@ -46,11 +46,15 @@ class Game:
 
             if len(self.sprite_groups.enemies_group) == 0:
                 levels_game.attack_level += 1
+                levels_game.current_level += 1
+                self.sprite_groups.camera_group.set_background()
                 levels_game.update_levels()
                 self.load_enemies()
 
             if len(self.sprite_groups.player_group) == 0:
                 levels_game.attack_level = 0
+                levels_game.current_level = 1
+                self.sprite_groups.camera_group.set_background()
                 levels_game.update_levels()
                 self.load_player()
                 self.load_enemies()
