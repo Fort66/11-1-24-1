@@ -23,7 +23,7 @@ class Game:
     def __init__(self):
         self.run = True
         self.clock = pg.time.Clock()
-        self.fps = 100
+        self.fps = 120
         self.screen = screen
         self.old_screen_size = self.screen.window.get_size()
         self.check_events = CheckEvents(self)
@@ -42,7 +42,7 @@ class Game:
     def background_animate(self):
         self.back_animate = BackgroundScreen(
             dir_path='images/back_animate/1',
-            speed_frame=.05,
+            speed_frame=.1,
             loops=-1,
             size=(
                 self.screen.rect[2],
@@ -83,4 +83,4 @@ class Game:
 
             self.screen.update_caption(f"{str(round(self.clock.get_fps(), 2))}")
             pg.display.update()
-            self.clock.tick(self.fps)
+            self.clock.tick()

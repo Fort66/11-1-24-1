@@ -13,7 +13,7 @@ from pygame.key import get_pressed
 
 from time import time
 
-from config.sources.heroes.source import HEROES
+from config.sources.heroes.hero1.source import HERO
 from config.create_Objects import (
     checks,
     weapons,
@@ -26,6 +26,8 @@ from units.class_Guardian import Guardian
 from classes.class_SpriteGroups import SpriteGroups
 
 from functions.function_player_collision import player_collision
+
+# HERO = 
 
 
 class Player(Sprite):
@@ -50,7 +52,7 @@ class Player(Sprite):
         self.__post_init__()
 
     def __post_init__(self):
-        self.image_rotation = HEROES[1]["angle"][0]["sprite"]
+        self.image_rotation = HERO["angle"][0]["sprite"]
         self.rect = self.image_rotation.get_rect(center=self.pos)
 
         self.sprite_groups.camera_group.add(shield:= Guardian(
@@ -84,15 +86,15 @@ class Player(Sprite):
                 self.shot()
 
     def prepare_weapon(self, angle):
-        weapons.load_weapons(obj=self, source=HEROES[1]["angle"][angle]["weapons"], angle=angle)
+        weapons.load_weapons(obj=self, source=HERO["angle"][angle]["weapons"], angle=angle)
 
     def pos_weapons_rotation(self):
         return weapons.pos_rotation(self, self.angle)
 
     def rotation(self):
-        for value in HEROES[1]["angle"]:
+        for value in HERO["angle"]:
             if self.angle <= value:
-                self.image = HEROES[1]["angle"][value]["sprite"]
+                self.image = HERO["angle"][value]["sprite"]
                 self.prepare_weapon(value)
                 break
 

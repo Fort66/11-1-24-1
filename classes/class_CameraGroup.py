@@ -6,6 +6,8 @@ from pygame.math import Vector2
 from functions.function_load_source import load_source
 from logic.class_LevelsGame import LevelsGame
 
+from icecream import ic
+
 # import gif_pygame
 # from Game.source import *
 # from icecream import ic
@@ -68,3 +70,13 @@ class CameraGroup(Group):
         self.check_screen_size()
         super().update()
         self.custom_draw(self.game.player)
+
+
+'''
+(0, 0)
+^ (0, -speed)
+<- (-speed, 0)
+-> (6400, 0)
+(6400, 3600)
+
+'''
