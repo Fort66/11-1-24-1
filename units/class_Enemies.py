@@ -28,12 +28,12 @@ class Enemy(Sprite):
 
         self.player = player
         self.angle = 0
-        self.shots = False
-        self.is_min_distance = False
         self.min_distance = 300
         self.shot_distance = 1500
         self.shot_time = 0
         self.hp = 2
+        self.shots = False
+        self.is_min_distance = False
         self.__post_init__()
         self.random_value()
         self.change_direction()
@@ -61,10 +61,9 @@ class Enemy(Sprite):
             speed_frame=0.09,
             guard_level=randint(3, 10),
             loops=-1,
-            size=self.rect.size,
             angle=self.angle,
+            size=self.rect.size,
             scale_value=(1, 1),
-            obj=self,
             owner=self
         ))
         self.sprite_groups.enemies_guard_group.add(shield)
@@ -82,10 +81,6 @@ class Enemy(Sprite):
         self.move_count = randint(0, 600)
         self.direction_list = [0, 1, -1]
         self.permision_shot = uniform(1, 3)
-
-    def rotate_vector(self, vector, angle):
-        vector = Vector2(vector)
-        return vector.rotate_rad(angle)
 
     def rotation(self):
         rotateX = self.player.rect.centerx - self.rect.centerx
@@ -156,8 +151,6 @@ class Enemy(Sprite):
                                 angle=self.angle,
                                 speed=8,
                                 kill_shot_distance=2000,
-                                shoter=self,
-                                color=None,
                                 image="images/Shots/shot1.png",
                                 scale_value=0.08,
                                 owner=self
@@ -179,5 +172,4 @@ class Enemy(Sprite):
         self.move()
         self.shot()
         enemies_collision()
-
         weapons.update_weapons(self, self.angle)

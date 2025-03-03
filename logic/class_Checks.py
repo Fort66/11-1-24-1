@@ -1,6 +1,5 @@
 class Checks:
     resolved_move = True
-
     def position(self, int_obj, ext_obj):
         if int_obj.rect.left < ext_obj.left:
             int_obj.rect.left = ext_obj.left

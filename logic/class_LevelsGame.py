@@ -21,6 +21,6 @@ class LevelsGame:
     def __init__(self):
         self.__dict__ = self.__levels_dict
         self.enemies_amount = round(lerp(self.enemies_min, self.enemies_max, self.attack_level / self.final_level))
-    
+
     def update_levels(self):
         self.enemies_amount = round(lerp(self.enemies_min, self.enemies_max, self.attack_level / self.final_level))

@@ -1,7 +1,4 @@
 from pygame.sprite import groupcollide
-from config.create_Objects import screen
-
-from icecream import ic
 
 from classes.class_SpriteGroups import SpriteGroups
 

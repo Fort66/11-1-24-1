@@ -26,4 +26,3 @@ class Weapons:
             pos[0] += obj.direction.x
             pos[1] += obj.direction.y
 
-            return pos[0], pos[1]

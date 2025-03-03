@@ -1,7 +1,4 @@
 from pygame.sprite import groupcollide
-from config.create_Objects import screen
-from units.class_Explosion import Explosion
-
 
 from classes.class_SpriteGroups import SpriteGroups
 

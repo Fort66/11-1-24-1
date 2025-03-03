@@ -1,10 +1,11 @@
 import pygame as pg
 from pygame.sprite import Sprite
 from pygame.math import Vector2
-from pygame.transform import rotozoom, scale_by
+from pygame.transform import (
+    rotozoom,
+    scale_by
+    )
 from pygame.image import load
-
-from icecream import ic
 
 from classes.class_SpriteGroups import SpriteGroups
 from functions.function_shots_collision import (
@@ -22,7 +23,6 @@ class Shots(Sprite):
                 color='white',
                 speed=0,
                 angle=0,
-                shoter=None,
                 kill_shot_distance=None,
                 scale_value=None,
                 image=None,
@@ -33,13 +33,12 @@ class Shots(Sprite):
         super().__init__(self.sprite_groups.camera_group)
 
         self.damage = damage
-        self.shoter = shoter
         self.kill_shot_distance = kill_shot_distance
         self.angle = angle
         self.speed = speed
         self.size = size
         self.owner = owner
-        self.old_shot_coordinate = Vector2(self.shoter.rect.center)
+        self.old_shot_coordinate = Vector2(self.owner.rect.center)
         if image:
             self.image = scale_by(load(image).convert_alpha(), scale_value)
         else:
