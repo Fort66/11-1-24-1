@@ -45,7 +45,6 @@ class Player(Sprite):
         self.speed = 5
         self.shot_time = 1
         self.permission_shot = .25
-        self.old_screen_size = screen.window.get_size()
         self.hp = 5
         self.first_shot = False
         self.__post_init__()
@@ -142,7 +141,6 @@ class Player(Sprite):
             self.kill()
 
     def update(self):
-        # self.change_size_map()
         self.check_position()
         self.move()
         player_collision()

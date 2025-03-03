@@ -1,61 +1,31 @@
-import pygame as pg
-from pygame.locals import K_RIGHT, K_LEFT
-from pygame.transform import scale
-from pygame.image import load
-from pygame.key import get_pressed
+from classes.class_Animator import Animator
 
+class BackgroundScreen(Animator):
+    def __init__(
+        self,
+        dir_path=None,
+        speed_frame=None,
+        owner=None,
+        loops=None,
+        size=None,
+        scale_value=None,
+        no_group=None
+        ):
+        super().__init__(
+            dir_path=dir_path,
+            speed_frame=speed_frame,
+            loops=loops,
+            size=size,
+            scale_value=scale_value,
+            no_group=no_group
+        )
 
-from dataclasses import dataclass, field
+        self.owner = owner
+        self.rect = self.image_rotation.get_rect(center=self.owner.rect.center)
 
+    def update(self):
+        self.image_rotation = self.frames[self.frame][0]
+        self.rect = self.image_rotation.get_rect(center=self.owner.rect.center)
+        self.animate()
+        self.owner.window.blit(self.image_rotation, self.rect)
 
-@dataclass
-class BackgroundScreen:
-    image_background: str = field(default = '')
-    screen: object = field(default = None)
-    speed: int = field(default = 0)
-    long: int = 1
-    transformation: bool = False
-    scrolling: bool = False
-    
-    
-    def __post_init__(self):
-        self.scr_widht = self.screen.get_width()
-        self.scr_height = self.screen.get_height()
-        
-        self.bg = scale(load(self.image_background).convert_alpha(), (self.scr_widht, self.scr_height))
-        
-        self.bg_list = [self.bg for _ in range(3)]
-        
-        self.bg_rect_left = self.bg_list[0].get_rect()
-        self.bg_rect_center = self.bg_list[1].get_rect()
-        self.bg_rect_right = self.bg_list[2].get_rect()
-        
-    
-    def eventKey(self):
-        keys = get_pressed()
-        
-        if keys[K_RIGHT]:
-            self.scroll('right')
-            
-        if keys[K_LEFT]:
-            self.scroll('left')
-
-    
-    def scroll(self, direction):
-        if direction =='right':
-            if self.bg_rect_center.x <= - self.scr_widht:
-                self.bg_rect_center.x = 0
-            self.bg_rect_center.x -= self.speed
-            
-        if direction =='left':
-            if self.bg_rect_center.x >= self.scr_widht:
-                self.bg_rect_center.x = 0
-            self.bg_rect_center.x += self.speed
-
-        self.bg_rect_left.x = self.bg_rect_center.x - (self.bg_rect_center[2] - self.speed)
-        self.bg_rect_right.x = self.bg_rect_center.x + (self.bg_rect_center[2] - self.speed)
-
-    def blitBG(self):
-        self.screen.blit(self.bg_list[0], self.bg_rect_left)
-        self.screen.blit(self.bg_list[1], self.bg_rect_center)
-        self.screen.blit(self.bg_list[2], self.bg_rect_right)

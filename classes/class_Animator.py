@@ -19,10 +19,12 @@ class Animator:
         speed_frame=None,
         loops=-1,
         scale_value=None,
-        size=None
+        size=None,
+        no_group=False
     ):
-        self.sprite_groups = SpriteGroups()
-        super().__init__(self.sprite_groups.camera_group)
+        if not no_group:
+            self.sprite_groups = SpriteGroups()
+            super().__init__(self.sprite_groups.camera_group)
 
         self.dir_path = dir_path
         self.speed_frame = speed_frame

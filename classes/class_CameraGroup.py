@@ -3,7 +3,7 @@ from pygame.sprite import Group
 from pygame.image import load
 from pygame.display import get_surface
 from pygame.math import Vector2
-from config.sources.backgrounds.source import GALAXY_SECTORS
+from functions.function_load_source import load_source
 from logic.class_LevelsGame import LevelsGame
 
 # import gif_pygame
@@ -17,24 +17,35 @@ class CameraGroup(Group):
         super().__init__(self)
 
         self.game = game
+        self.change_screen_size()
+        self.camera_rect = pg.Rect(10, 10, 10, 10)
+        self.keyboard_speed = None
+        self.mouse_speed = None
+        self.levels_game = LevelsGame()
+        self.old_screen_size = self.game.screen.window.get_size()
+        self.set_background()
+
+    def set_background(self) -> None:
+        self.source = load_source(
+            dir_path='config/sources/backgrounds',
+            level=self.levels_game.game_level,
+            current_level=self.levels_game.current_level,
+        )
+        self.background_surface = load(self.source).convert_alpha()
+        self.background_rect = self.background_surface.get_rect()
+
+    def change_screen_size(self):
         self.display_surface = get_surface()
-        # camera offset
         self.offset = Vector2()
         self.half = (
             self.display_surface.get_size()[0] // 2,
             self.display_surface.get_size()[1] // 2,
         )
-        self.camera_rect = pg.Rect(10, 10, 10, 10)
-        self.keyboard_speed = None
-        self.mouse_speed = None
-        self.levels_game = LevelsGame()
-        self.set_background()
 
-    def set_background(self) -> None:
-        self.source = GALAXY_SECTORS[self.levels_game.current_level]
-        self.background_surface = load(self.source).convert_alpha()
-        self.background_rect = self.background_surface.get_rect()
-
+    def check_screen_size(self):
+        if self.old_screen_size != self.game.screen.window.get_size():
+            self.change_screen_size()
+            self.old_screen_size = self.game.screen.window.get_size()
 
     def camera_center(self, target):
         self.offset.x = target.rect.centerx - self.half[0]
@@ -51,5 +62,9 @@ class CameraGroup(Group):
             offset_position = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image_rotation, offset_position)
 
-
         self.game.mini_map.update()
+
+    def update(self):
+        self.check_screen_size()
+        super().update()
+        self.custom_draw(self.game.player)
