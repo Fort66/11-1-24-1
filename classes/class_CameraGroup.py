@@ -3,7 +3,7 @@ from pygame.sprite import Group
 from pygame.image import load
 from pygame.display import get_surface
 from pygame.math import Vector2
-from functions.function_load_source import load_source
+from functions.function_load_source import load_json_source
 from logic.class_LevelsGame import LevelsGame
 
 from icecream import ic
@@ -28,7 +28,7 @@ class CameraGroup(Group):
         self.set_background()
 
     def set_background(self) -> None:
-        self.source = load_source(
+        self.source = load_json_source(
             dir_path='config/sources/backgrounds',
             level=self.levels_game.game_level,
             current_level=self.levels_game.current_level,

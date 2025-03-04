@@ -13,7 +13,6 @@ from pygame.key import get_pressed
 
 from time import time
 
-from config.sources.heroes.hero1.source import HERO
 from config.create_Objects import (
     checks,
     weapons,
@@ -26,8 +25,14 @@ from units.class_Guardian import Guardian
 from classes.class_SpriteGroups import SpriteGroups
 
 from functions.function_player_collision import player_collision
+from functions.function_load_source import load_python_file_source
 
-# HERO = 
+HERO = load_python_file_source(
+    dir_path='config.sources.heroes',
+    module_name='source',
+    level=1,
+    name_source='HERO'
+)
 
 
 class Player(Sprite):
@@ -43,11 +48,11 @@ class Player(Sprite):
         self.pos = pos
         self.direction = Vector2(pos)
         self.angle = 0
-        self.rotation_speed = 10
-        self.speed = 5
+        self.rotation_speed = HERO['rotation_speed']
+        self.speed = HERO['speed']
         self.shot_time = 1
-        self.permission_shot = .25
-        self.hp = 5
+        self.permission_shot = HERO['permission_shot']
+        self.hp = HERO['hp']
         self.first_shot = False
         self.__post_init__()
 
@@ -56,13 +61,14 @@ class Player(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.pos)
 
         self.sprite_groups.camera_group.add(shield:= Guardian(
-            dir_path="images/Guards/guard1",
-            speed_frame=0.09,
-            guard_level=10,
-            loops=-1,
+            # dir_path="images/Guards/guard1",
+            # speed_frame=0.09,
+            # guard_level=10,
+            # loops=-1,
+            # scale_value=(1, 1),
+            types=1,
             angle=self.angle,
             size=self.rect.size,
-            scale_value=(1, 1),
             owner=self
         ))
         self.sprite_groups.player_guard_group.add(shield)

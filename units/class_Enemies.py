@@ -10,7 +10,6 @@ from icecream import ic
 from time import time
 from random import randint, choice, uniform
 
-from config.sources.enemies.source import ENEMIES
 from units.class_Shots import Shots
 from units.class_Guardian import Guardian
 
@@ -18,6 +17,14 @@ from config.create_Objects import checks, weapons
 from classes.class_SpriteGroups import SpriteGroups
 
 from functions.function_enemies_collision import enemies_collision
+from functions.function_load_source import load_python_file_source
+
+ENEMY = load_python_file_source(
+    dir_path='config.sources.enemies',
+    module_name='source',
+    level=1,
+    name_source='ENEMY'
+)
 
 
 class Enemy(Sprite):
@@ -39,7 +46,7 @@ class Enemy(Sprite):
         self.change_direction()
 
     def __post_init__(self):
-        self.image = ENEMIES[1]["angle"][0]["sprite"]
+        self.image = ENEMY["angle"][0]["sprite"]
         self.image_rotation = self.image.copy()
 
         self.pos = (
@@ -57,13 +64,14 @@ class Enemy(Sprite):
         self.direction = Vector2(self.pos)
 
         self.sprite_groups.camera_group.add(shield:= Guardian(
-            dir_path="images/Guards/guard2",
-            speed_frame=0.09,
-            guard_level=randint(3, 10),
-            loops=-1,
+            # dir_path="images/Guards/guard2",
+            # speed_frame=0.09,
+            # guard_level=randint(3, 10),
+            # loops=-1,
+            # scale_value=(1, 1),
+            types=2,
             angle=self.angle,
             size=self.rect.size,
-            scale_value=(1, 1),
             owner=self
         ))
         self.sprite_groups.enemies_guard_group.add(shield)
@@ -71,16 +79,17 @@ class Enemy(Sprite):
         self.prepare_weapon(0)
 
     def prepare_weapon(self, angle):
-        weapons.load_weapons(obj=self, source=ENEMIES[1]["angle"][angle]["weapons"], angle=angle)
+        weapons.load_weapons(obj=self, source=ENEMY["angle"][angle]["weapons"], angle=angle)
 
     def pos_weapons_rotation(self):
         return weapons.pos_rotation(self, self.angle)
 
     def random_value(self):
-        self.speed = randint(0, 5)
-        self.move_count = randint(0, 600)
-        self.direction_list = [0, 1, -1]
-        self.permision_shot = uniform(1, 3)
+        self.speed = randint(ENEMY['speed'][0], ENEMY['speed'][1])
+        self.move_counter = uniform(ENEMY['move_counter'][0], ENEMY['move_counter'][1])
+        self.move_time = time()
+        self.direction_list = ENEMY['direction_list']
+        self.permision_shot = uniform(ENEMY['permission_shot'][0], ENEMY['permission_shot'][1])
 
     def rotation(self):
         rotateX = self.player.rect.centerx - self.rect.centerx
@@ -92,9 +101,9 @@ class Enemy(Sprite):
         else:
             self.angle = angle_vector + 360
 
-        for value in ENEMIES[1]["angle"]:
+        for value in ENEMY["angle"]:
             if self.angle <= value:
-                self.image = ENEMIES[1]["angle"][value]["sprite"]
+                self.image = ENEMY["angle"][value]["sprite"]
                 break
 
         self.image_rotation = self.image
@@ -102,10 +111,9 @@ class Enemy(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
 
     def check_move_count(self):
-        if self.move_count <= 0:
+        if time() - self.move_time >= self.move_counter:
             self.random_value()
-        else:
-            self.move_count -= 1
+            self.change_direction()
 
     def change_direction(self):
         self.moveX = choice(self.direction_list)
