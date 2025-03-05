@@ -1,0 +1,5 @@
+{
+    "ship": "config/sources/heroes/1",
+    "guards": "config/sources/guards/1.json",
+    "rockets": "config/sources/rockets/1.json"
+}

@@ -64,11 +64,6 @@ class Enemy(Sprite):
         self.direction = Vector2(self.pos)
 
         self.sprite_groups.camera_group.add(shield:= Guardian(
-            # dir_path="images/Guards/guard2",
-            # speed_frame=0.09,
-            # guard_level=randint(3, 10),
-            # loops=-1,
-            # scale_value=(1, 1),
             types=2,
             angle=self.angle,
             size=self.rect.size,
@@ -155,12 +150,9 @@ class Enemy(Sprite):
                     for pos in value:
                         self.sprite_groups.camera_group.add(
                             shot := Shots(
+                                types=1,
                                 pos=(pos),
                                 angle=self.angle,
-                                speed=8,
-                                kill_shot_distance=2000,
-                                image="images/Shots/shot1.png",
-                                scale_value=0.08,
                                 owner=self
                             )
                         )

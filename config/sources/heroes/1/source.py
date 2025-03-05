@@ -1,7 +1,7 @@
 from pygame.transform import flip, scale_by
 from pygame.image import load
 
-SCALE_VALUE = .225
+SCALE_VALUE = .2
 
 HERO = {
         'angle':{

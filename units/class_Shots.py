@@ -14,10 +14,12 @@ from functions.function_shots_collision import (
     shots_collision,
     distance_collision
     )
+from functions.function_load_source import load_json_source
 
 class Shots(Sprite):
     def __init__(
                 self,
+                types=None,
                 pos=(0, 0),
                 size=(20, 3),
                 color='white',
@@ -25,26 +27,40 @@ class Shots(Sprite):
                 angle=0,
                 kill_shot_distance=None,
                 scale_value=None,
-                image=None,
                 damage=None,
                 owner=None
                 ):
+        if types:
+            self.source = load_json_source(
+                dir_path='config/sources/rockets',
+                level=types
+            )
+            self.images = self.source['image']
+            self.speed = self.source['speed']
+            self.damage = self.source['damage']
+            self.scale_value = self.source['scale_value']
+            self.kill_shot_distance = self.source['kill_shot_distance']
+        else:
+            self.scale_value = scale_value
+            self.kill_shot_distance = kill_shot_distance
+            self.damage = damage
+            self.speed = speed
+
+
         self.sprite_groups = SpriteGroups()
         super().__init__(self.sprite_groups.camera_group)
 
-        self.damage = damage
-        self.kill_shot_distance = kill_shot_distance
         self.angle = angle
-        self.speed = speed
         self.size = size
         self.owner = owner
         self.old_shot_coordinate = Vector2(self.owner.rect.center)
-        if image:
-            self.image = scale_by(load(image).convert_alpha(), scale_value)
+
+        if self.images:
+            self.images = scale_by(load(self.images).convert_alpha(), self.scale_value)
         else:
-            self.image = pg.Surface(self.size, pg.SRCALPHA)
-            self.image.fill(color)
-        self.image_rotation = rotozoom(self.image, self.angle, 1)
+            self.images = pg.Surface(self.size, pg.SRCALPHA)
+            self.images.fill(color)
+        self.image_rotation = rotozoom(self.images, self.angle, 1)
         self.rect = self.image_rotation.get_rect(center=pos)
         self.offset =  Vector2().rotate(self.angle)
         self.pos = Vector2(pos) + self.offset
